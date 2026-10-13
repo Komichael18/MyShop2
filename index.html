@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MyShop — Admin 🛠️</title>
+<style>
+
+*{box-sizing:border-box}
+body{text-align:left;margin:0;font-family:"Noto Sans Myanmar","Myanmar Text",Pyidaungsu,Padauk,Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:#f6f1e8;color:#21201c;min-height:100vh;line-height:1.55}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;-webkit-tap-highlight-color:transparent}
+:root{--brand:#e2622b;--brand2:#1f9d4a;--ink:#21201c;--mut:#7a756a;--card:#fff;--line:#e9e0d2;--bg:#f6f1e8;--dark:#1d1a16}
+header.top{position:sticky;top:0;z-index:60;background:linear-gradient(135deg,#1d1a16,#3a2415);color:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 14px #0003}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--brand2),var(--brand));display:grid;place-items:center;font-size:22px;font-weight:900;flex:0 0 auto}
+.brandBlock{flex:1;min-width:0}
+.brand{font-weight:900;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font-size:12px;color:#ffd9bd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hBtn{height:42px;min-width:44px;padding:0 12px;border-radius:12px;background:#ffffff1c;border:1px solid #ffffff2e;color:#fff;font-weight:900;font-size:15px;position:relative}
+.hBtn.cart{background:linear-gradient(135deg,var(--brand2),var(--brand));border-color:#ffffff55}
+.badge{position:absolute;right:-6px;top:-8px;min-width:22px;height:22px;padding:0 5px;border-radius:99px;background:#ff2f2f;color:#fff;font-size:12px;font-weight:900;display:grid;place-items:center;border:2px solid #fff}
+.modeTabs{display:flex;gap:8px;padding:10px 12px 0;max-width:1100px;margin:0 auto}
+.modeTabs button{flex:1;height:44px;border-radius:13px;font-weight:900;font-size:15px;background:#fff;border:1px solid var(--line);color:var(--mut)}
+.modeTabs button.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+.wrap{max-width:1100px;margin:0 auto;padding:10px 12px 120px}
+.hero{background:linear-gradient(120deg,#1f9d4a,#e2622b 70%,#7a2fd0);border-radius:20px;color:#fff;padding:22px 18px;margin:10px 0 12px;position:relative;overflow:hidden}
+.hero h1{margin:0 0 4px;font-size:24px}
+.hero p{margin:0 0 10px;font-size:13px;opacity:.92}
+.hero .pill{display:inline-block;background:#00000038;border:1px solid #ffffff55;padding:4px 12px;border-radius:99px;font-size:12px;font-weight:800}
+.hero::after{content:'🛍️';position:absolute;right:10px;bottom:-14px;font-size:110px;opacity:.25;transform:rotate(-12deg)}
+.toolbar{display:flex;gap:8px;margin:8px 0}
+.search{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:0 12px;height:46px}
+.search input{flex:1;border:0;outline:0;background:transparent;font-size:15px;min-width:0}
+.cats{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}
+.cat{flex:0 0 auto;height:38px;padding:0 16px;border-radius:99px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:800;color:#5b554a}
+.cat.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+.conn{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px;margin:2px 2px 8px}
+.dot{width:9px;height:9px;border-radius:50%;background:#999}
+.dot.live{background:var(--brand2);box-shadow:0 0 8px var(--brand2)}
+.dot.demo{background:#e6a100}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.hero h1{font-size:30px}}
+@media(min-width:1000px){.grid{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 10px #0000000d}
+.pimg{position:relative;aspect-ratio:1;background:#eee;overflow:hidden}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.stock{position:absolute;left:8px;top:8px;font-size:11px;font-weight:900;padding:3px 9px;border-radius:99px;border:1px solid}
+.stock.ok{background:#e8f8ee;border-color:#9fd8b2;color:#0d6b2f}
+.stock.low{background:#fff4d6;border-color:#e6a100;color:#8a5c00}
+.stock.out{background:#ffe1e1;border-color:#e05555;color:#a01212}
+.off{position:absolute;right:8px;top:8px;background:#ff2f2f;color:#fff;font-size:11px;font-weight:900;padding:3px 9px;border-radius:99px}
+.pbody{padding:10px 10px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.pcat{font-size:11px;color:var(--mut)}
+.pname{font-weight:800;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:42px}
+.prow{display:flex;align-items:baseline;gap:6px}
+.price{font-weight:900;font-size:16px;color:#c2430f}
+.old{font-size:12px;color:#aaa;text-decoration:line-through}
+.addBtn{margin-top:6px;height:42px;border-radius:11px;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff}
+.addBtn:disabled{background:#d8d2c4;color:#8a8478}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:16px;padding:30px;text-align:center;color:var(--mut)}
+/* sheets & modals */
+.sheet{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:#0009}
+.sheet.open{display:flex}
+.card2{width:100%;max-width:560px;max-height:92vh;overflow:auto;background:#fff;border-radius:22px 22px 0 0;padding:10px 16px 20px;animation:up .18s ease-out;color:var(--ink)}
+@media(min-width:700px){.sheet{align-items:center;padding:20px}.card2{border-radius:20px}}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+.handle{width:46px;height:5px;border-radius:9px;background:#ddd;margin:4px auto 10px}
+.card2 h3{margin:4px 0 10px;font-size:17px}
+.dImg{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;background:#eee}
+.qtyRow{display:flex;align-items:center;gap:10px;margin:12px 0}
+.step{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.step button{width:48px;height:48px;font-size:22px;font-weight:900;background:#f3ede0}
+.step b{min-width:56px;text-align:center;font-size:18px}
+.totalRow{display:flex;justify-content:space-between;font-weight:900;font-size:17px;margin:8px 0}
+.btnRow{display:flex;gap:8px;margin-top:10px}
+.btnRow button{flex:1;min-height:50px;border-radius:13px;font-weight:900;font-size:15px;background:#efe9db;color:var(--ink)}
+.btnRow button.primary{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff}
+.btnRow button:disabled{opacity:.4}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:13px;font-weight:800;margin-bottom:4px;color:#5b554a}
+.field input,.field select,.field textarea{width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);background:#fffdf8;font-size:15px;color:var(--ink)}
+.field textarea{resize:vertical}
+.hint{font-size:12px;color:var(--mut)}
+.err{font-size:12px;color:#c00;font-weight:700;display:none}
+.cartItem{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.cartItem img{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#eee;flex:0 0 auto}
+.ciMid{flex:1;min-width:0}
+.ciMid b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ciMid span{font-size:12px;color:var(--mut)}
+.mini{display:flex;align-items:center;gap:8px;margin-top:6px}
+.mini button{width:32px;height:32px;border-radius:9px;background:#f3ede0;font-weight:900;font-size:16px}
+.mini b{min-width:26px;text-align:center}
+.rm{background:none;color:#c00;font-size:12px;text-decoration:underline}
+/* admin */
+.admGate{text-align:center;padding:20px 6px}
+.admGate input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);font-size:18px;text-align:center;letter-spacing:3px;margin:10px 0}
+.statGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.stat{background:#fffdf8;border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center}
+.stat b{font-size:20px;display:block}
+.stat span{font-size:11px;color:var(--mut)}
+.aTabs{display:flex;gap:8px;margin:10px 0}
+.aTabs button{flex:1;height:42px;border-radius:11px;font-weight:900;background:#efe9db;font-size:14px}
+.aTabs button.on{background:var(--dark);color:#fff}
+.arow{background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.arow img{width:52px;height:52px;border-radius:10px;object-fit:cover;background:#eee}
+.arow .m{flex:1;min-width:0}
+.arow .m b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arow .m span{font-size:12px;color:var(--mut)}
+.abtn{height:38px;padding:0 12px;border-radius:10px;background:#efe9db;font-weight:800;font-size:13px}
+.abtn.danger{background:#ffe1e1;color:#a01212}
+.abtn.go{background:#e8f8ee;color:#0d6b2f}
+.stSel{padding:8px;border-radius:9px;border:1px solid var(--line);font-size:13px;font-weight:800}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#1d1a16;color:#ffe6a3;border-radius:11px;padding:10px;white-space:pre-wrap;word-break:break-all}
+.successBox{text-align:center;padding:8px 4px}
+.bigCheck{width:70px;height:70px;border-radius:50%;background:#e8f8ee;display:grid;place-items:center;font-size:36px;margin:6px auto}
+.toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,-12px);background:#1d1a16;color:#fff;border-radius:14px;padding:12px 18px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;transition:.15s;max-width:92vw;text-align:center;z-index:500}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.cartBar{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#1d1a16;color:#fff;padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:none;align-items:center;gap:10px}
+.cartBar.show{display:flex}
+.cartBar .t{flex:1}.cartBar .t b{display:block;font-size:15px}.cartBar .t span{font-size:12px;color:#ffd9bd}
+.cartBar button{height:50px;padding:0 22px;border-radius:13px;background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff;font-weight:900;font-size:15px}
+footer{max-width:1100px;margin:0 auto;padding:0 12px 30px;color:var(--mut);font-size:12px;text-align:center}
+.guideBox{background:#fffdf8;border:1px solid var(--line);border-radius:13px;padding:12px;font-size:13px}
+.guideBox ol{margin:6px 0;padding-left:20px}
+.guideBox code{background:#efe9db;padding:1px 6px;border-radius:6px;font-size:12px}
+.prevImg{width:100%;max-height:180px;object-fit:cover;border-radius:11px;background:#eee;margin-top:6px;display:none}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">🛠️</div>
+  <div class="brandBlock"><div class="brand" id="admShopNameEl">Admin</div><div class="sub" id="admShopTagEl">MyShop စီမံခန့်ခွဲမှု</div></div>
+</header>
+<div class="wrap">
+  <div class="conn" style="margin-top:10px"><span class="dot demo" id="admDotEl"></span><span id="admConnEl">…</span></div>
+
+<div class="wrap" id="adminView">
+  <div id="admGate">
+    <div class="admGate">
+      <h3 style="margin:4px">🛠️ Admin Login</h3>
+      <p class="hint">Demo PIN: <b>1234</b> • Live မှာ GAS Script Properties → ADMIN_PASSWORD</p>
+      <input id="admPinInput" type="password" inputmode="numeric" placeholder="••••" autocomplete="off">
+      <div class="btnRow"><button class="primary" id="admLoginBtn">ဝင်မယ် ✓</button></div>
+    </div>
+  </div>
+  <div id="admMain" hidden>
+    <div class="statGrid">
+      <div class="stat"><b id="stProductsEl">–</b><span>ပစ္စည်း</span></div>
+      <div class="stat"><b id="stOrdersEl">–</b><span>အော်ဒါ</span></div>
+      <div class="stat"><b id="stSalesEl">–</b><span>ရောင်းရငွေ (Ks)</span></div>
+    </div>
+    <div class="aTabs">
+      <button id="tabProductsBtn" class="on">📦 ပစ္စည်း</button>
+      <button id="tabOrdersBtn">🧾 အော်ဒါ</button>
+      <button id="tabGuideBtn">⚙️ ချိတ်ဆက်</button>
+    </div>
+    <div id="paneProducts">
+      <div class="btnRow" style="margin-bottom:10px"><button class="primary" id="addProductBtn">＋ ပစ္စည်းအသစ် တင်မယ်</button><button id="admRefreshBtn">↻ Refresh</button></div>
+      <div id="admProductsCtn"></div>
+    </div>
+    <div id="paneOrders" hidden><div id="admOrdersCtn"></div></div>
+    <div id="paneGuide" hidden>
+      <div class="guideBox">
+        <b>🔗 Google Sheet ချိတ်နည်း (၅ မိနစ်)</b>
+        <ol>
+          <li><code>src/Code.gs</code> ကို copy → <code>sheet.google.com</code> Sheet အသစ် → Extensions → Apps Script → paste → Save</li>
+          <li>Run → <code>setup()</code> တစ်ခါ (Allow ပေး) — Products/Orders ရွက်ဆောက်မယ်</li>
+          <li>⚙ Project Settings → Script Properties → <code>ADMIN_PASSWORD</code> ထည့်</li>
+          <li>Deploy → New deployment → Web app → <b>Execute as: Me</b> → <b>Anyone</b> → /exec URL copy</li>
+          <li>အောက်မှာ URL ကပ် → 💾 သိမ်း → 🟢 Live ဖြစ်မယ်။ ပုံတွေက Drive <code>MyShop_Images</code> ထဲ auto-တက်, Order တွေက Sheet Orders ရွက်ထဲ auto-ရောက် ✅</li>
+        </ol>
+      </div>
+      <div class="field" style="margin-top:10px"><label>GAS /exec URL (ဒီဖုန်းထဲ သိမ်း)</label><input id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec"></div>
+      <div class="btnRow"><button class="primary" id="gasSaveBtn">💾 သိမ်း + ချိတ်</button><button id="gasDemoBtn">Demo ပြန်သုံး</button></div>
+      <div class="field" style="margin-top:10px"><label>စမ်းသပ်</label><div class="mono" id="gasTestOutEl">—</div></div>
+      <div class="btnRow"><button id="gasTestBtn">📡 Ping စမ်း</button><button id="admLogoutBtn">🚪 Admin ထွက်</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="editorSheet"><div class="card2">
+  <div class="handle"></div><h3 id="edTitleEl">＋ ပစ္စည်းအသစ်</h3>
+  <div class="field"><label>အမည် *</label><input id="edNameInput" placeholder="ဥပမာ လက်ဖက်ရည်"></div>
+  <div class="field"><label>အမျိုးအစား</label><input id="edCatInput" placeholder="အစားအသောက် / အဝတ်အထည် / …" list="catListEl"><datalist id="catListEl"></datalist></div>
+  <div class="field"><label>ဈေး (Ks) *</label><input id="edPriceInput" inputmode="numeric" placeholder="8500"></div>
+  <div class="field"><label>အရင်ဈေး (လျှော့ဈေးပြချင်ရင်, မရှိရင် 0)</label><input id="edOldInput" inputmode="numeric" placeholder="0"></div>
+  <div class="field"><label>လက်ကျန် (အရေအတွက်) *</label><input id="edStockInput" inputmode="numeric" placeholder="50"></div>
+  <div class="field"><label>ဖော်ပြချက်</label><textarea id="edDescInput" rows="2" placeholder="ပစ္စည်းအကြောင်း…"></textarea></div>
+  <div class="field"><label>ပုံ URL (Drive/တခြားလင့် — မရှိရင် အောက်က ဖိုင်ရွေး)</label><input id="edImgInput" placeholder="https://…"></div>
+  <div class="field"><label>ဖိုင်ကနေ ပုံတင် (Live=Drive တက် / Demo=ဖုန်းထဲ သိမ်း)</label><input id="edFileInput" type="file" accept="image/*"><img class="prevImg" id="edPrevImgEl"></div>
+  <div class="btnRow"><button class="primary" id="edSaveBtn">💾 သိမ်း</button><button id="edCloseBtn">ပိတ်</button></div>
+</div></div>
+
+<div class="toast" id="toastEl"></div>
+</div>
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+function toast(m,ms){var e=$('#toastEl');e.textContent=m;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show')},ms||2600)}
+function pjs(k,fb){try{if(typeof root!=='undefined'&&root&&root[k]!=null){var s=String(root[k]).trim();if(s.length>=2&&s[0]==='"'&&s[s.length-1]==='"')s=s.slice(1,-1);if(s)return s}}catch(e){}return fb}
+function fmt(n){n=Math.round(Number(n)||0);return n.toLocaleString('en-US')+' '+CFG.currency}
+// ပုံမရှိရင် အမျိုးအစားအလိုက် emoji placeholder (internet မလိုဘူး, Sheet ပုံမဲ့ပစ္စည်းအတွက်ပါ)
+function phImg(p){
+  var map={'အစားအသောက်':['☕','#e2622b','#f5b942'],'အဝတ်အထည်':['👘','#7a2fd0','#e2622b'],'အလှကုန်':['✨','#e2498a','#f5b942'],'လျှပ်စစ်':['🎧','#2b6fe2','#59e7ff'],'အသုံးအဆောင်':['🎒','#1f9d4a','#b8e62b']};
+  var m=map[p&&p.category]||['🛍️','#1f9d4a','#e2622b'];
+  var nm=[['☕','🍯','🍚'],['👘','🩴','👕'],['🧼','💄','✨'],['🎧','🔌','📱'],['🎒','🧺','🎁']];
+  var ci=Math.abs(String((p&&p.id)||'X').split('').reduce(function(a,c){return a+c.charCodeAt(0)},0))%3;
+  var cats=Object.keys(map),ki=cats.indexOf(p&&p.category);if(ki<0)ki=4;
+  var e=(nm[ki]&&nm[ki][ci])||m[0];
+  var svg="<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='"+m[1]+"'/><stop offset='1' stop-color='"+m[2]+"'/></linearGradient></defs><rect width='600' height='600' fill='url(#g)'/><text x='300' y='340' font-size='220' text-anchor='middle'>"+e+"</text></svg>";
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+}
+function pImg(p,sz){return (p&&p.imageUrl)||phImg(p)}
+// ★ GitHub Pages etc. မှာ တင်မယ့်သူ: ကိုယ့် GAS /exec URL ကို ဒီမှာ တစ်ခါ ကပ် →
+//    ဆိုင်ဖွင့်သူတိုင်း (ဝယ်သူအပါ) auto-Live ဖြစ်မယ်။ ဗလာထားရင် Demo mode.
+var DEFAULT_GAS_URL="";
+var CFG={
+  shopName:pjs('shopName','ရွှေစင်စတိုး'), tagline:pjs('shopTagline','လှိုင်သာယာ • ရန်ကုန် — COD ရပါတယ်'),
+  currency:pjs('currency','Ks'), deliveryFee:Number(pjs('deliveryFee','3000'))||3000,
+  freeOver:Number(pjs('freeDeliveryOver','50000'))||50000,
+  demoPin:pjs('demoAdminPin','1234'),
+  gasUrl:(function(){try{var u=localStorage.getItem('myshop_gas')||'';if(u)return u}catch(e){}try{if(DEFAULT_GAS_URL)return DEFAULT_GAS_URL}catch(e2){}return pjs('gasUrl','')})()
+};
+CFG.gasUrl=String(CFG.gasUrl||'').trim();
+// ---------- Demo seed ----------
+var DEMO=[
+ {id:'D001',name:'မြန်မာ လက်ဖက်ရည် (၂၀ ထုပ်)',category:'အစားအသောက်',price:8500,oldPrice:10000,stock:50,description:'မွှေးမွှေးလေး အရသာစစ်စစ် — မနက်တိုင်းအတွက် ☕',imageUrl:'',status:'ACTIVE'},
+ {id:'D002',name:'ပိုးထည် လုံချည်',category:'အဝတ်အထည်',price:25000,oldPrice:0,stock:12,description:'လက်ရက်ကန်း ပိုးလုံချည် — လက်ဆောင်ပေးလို့ကောင်း 🎁',imageUrl:'',status:'ACTIVE'},
+ {id:'D003',name:'သဘာဝ ပျားရည် (500ml)',category:'အစားအသောက်',price:18000,oldPrice:20000,stock:0,description:'သဘာဝပျားရည်စစ်စစ် 🍯 (ဒါက ကုန်နေတဲ့ နမူနာ)',imageUrl:'',status:'ACTIVE'},
+ {id:'D004',name:'ဖိနပ် Slipper (unisex)',category:'အဝတ်အထည်',price:12000,oldPrice:15000,stock:4,description:'ပေါ့ပေါ့ပါးပါး နေ့တိုင်းစီး — Size 38-44',imageUrl:'',status:'ACTIVE'},
+ {id:'D005',name:'မျက်နှာသစ် သဘာဝဆပ်ပြာ',category:'အလှကုန်',price:6500,oldPrice:0,stock:30,description:'အဆီပြန်သက်သာ၊ အသားရေကြည်လင် ✨',imageUrl:'',status:'ACTIVE'},
+ {id:'D006',name:'ဆန် (ပေါ်ဆန်းမွှေး ၅ ပြည်)',category:'အစားအသောက်',price:22000,oldPrice:0,stock:20,description:'ဆန်သစ်၊ မွှေးမွှေးလေး 🍚',imageUrl:'',status:'ACTIVE'},
+ {id:'D007',name:'နားကြပ် Bluetooth',category:'လျှပ်စစ်',price:35000,oldPrice:42000,stock:8,description:'အသံကြည်၊ ဘက်ထရီ ၂၄ နာရီ 🎧',imageUrl:'',status:'ACTIVE'},
+ {id:'D008',name:'ကျောပိုးအိတ် Canvas',category:'အသုံးအဆောင်',price:28000,oldPrice:0,stock:15,description:'ကျောင်း/ခရီး/အလုပ် — ရေစိုခံ 🎒',imageUrl:'',status:'ACTIVE'}
+];
+function demoLoad(){try{var s=JSON.parse(localStorage.getItem('myshop_products')||'null');if(Array.isArray(s)&&s.length){s.forEach(function(p){if(p.imageUrl&&p.imageUrl.indexOf('picsum')>=0)p.imageUrl=''});return s}}catch(e){}return JSON.parse(JSON.stringify(DEMO))}
+function demoSave(p){try{localStorage.setItem('myshop_products',JSON.stringify(p))}catch(e){}}
+function demoOrders(){try{return JSON.parse(localStorage.getItem('myshop_orders')||'[]')}catch(e){return[]}}
+function demoSaveOrders(o){try{localStorage.setItem('myshop_orders',JSON.stringify(o))}catch(e){}}
+
+// ---------- API ----------
+function isLive(){return !!CFG.gasUrl}
+function postLive(body){
+  return fetch(CFG.gasUrl,{method:'POST',body:JSON.stringify(body)}).then(function(r){return r.json()});
+}
+var API={
+  mode:function(){return isLive()?'live':'demo'},
+  ping:function(){
+    if(!isLive())return Promise.resolve({ok:true,demo:true});
+    return fetch(CFG.gasUrl+'?action=ping').then(function(r){return r.json()});
+  },
+  listProducts:function(){
+    if(!isLive())return Promise.resolve(demoLoad());
+    return fetch(CFG.gasUrl+'?action=listProducts').then(function(r){return r.json()}).then(function(j){
+      if(!j.ok)throw new Error(j.error||'LOAD_FAIL');return j.products;
+    });
+  },
+  createOrder:function(customer,items){
+    if(!isLive()){
+      var prods=demoLoad(),by={};prods.forEach(function(p){by[p.id]=p});
+      var lines=[],tq=0,tt=0,prob=[];
+      items.forEach(function(it){
+        var p=by[it.id];if(!p){prob.push({id:it.id,error:'NOT_FOUND'});return}
+        var q=Math.max(1,Math.min(99,it.qty|0));
+        if(p.stock<q){prob.push({id:p.id,name:p.name,error:'OUT_OF_STOCK',left:p.stock});return}
+        lines.push({id:p.id,name:p.name,price:p.price,qty:q,subtotal:p.price*q,imageUrl:p.imageUrl});tq+=q;tt+=p.price*q;
+      });
+      if(prob.length)return Promise.resolve({ok:false,error:'OUT_OF_STOCK',problems:prob});
+      prods.forEach(function(p){lines.forEach(function(L){if(L.id===p.id)p.stock=Math.max(0,p.stock-L.qty)})});
+      demoSave(prods);
+      var oid='OD-'+Date.now().toString(36).toUpperCase();
+      var rec={orderId:oid,createdAt:new Date().toISOString(),customerName:customer.name,phone:customer.phone,address:customer.address,township:customer.township||'',note:customer.note||'',payment:customer.payment||'COD',items:lines,totalQty:tq,totalAmount:tt,status:'PENDING'};
+      var os=demoOrders();os.unshift(rec);demoSaveOrders(os);
+      return Promise.resolve({ok:true,orderId:oid,totalQty:tq,totalAmount:tt,payment:rec.payment,items:lines,
+        message:'မင်္ဂလာပါ '+customer.name+'! "'+lines.length+' မျိုး ('+tq+' ခု)" အော်ဒါ '+oid+' လက်ခံရရှိပါပြီ။ စုစုပေါင်း '+tt.toLocaleString('en-US')+' Ks'+(rec.payment==='COD'?' — ပစ္စည်းရောက်မှ ငွေချေပါ.':' — '+rec.payment+' လွှဲပြီး ဖုန်းဆက်အတည်ပြုပေးပါ့မယ်.')+' ကျေးဇူးတင်ပါတယ်!'});
+    }
+    return postLive({action:'createOrder',customer:customer,items:items});
+  },
+  adminLogin:function(pin){
+    if(!isLive())return Promise.resolve(String(pin)===String(CFG.demoPin)?{ok:true}:{ok:false});
+    return fetch(CFG.gasUrl+'?action=listOrders&adminKey='+encodeURIComponent(pin)).then(function(r){return r.json()}).then(function(j){
+      return j.ok?{ok:true}:{ok:false,error:j.error};
+    }).catch(function(){return{ok:false,error:'NET'}});
+  },
+  listOrders:function(pin){
+    if(!isLive())return Promise.resolve(demoOrders());
+    return fetch(CFG.gasUrl+'?action=listOrders&adminKey='+encodeURIComponent(pin)).then(function(r){return r.json()}).then(function(j){
+      if(!j.ok)throw new Error(j.error||'LOAD_FAIL');return j.orders;
+    });
+  },
+  upsertProduct:function(pin,p){
+    if(!isLive()){
+      var ps=demoLoad();
+      if(!p.id)p.id='D'+Date.now().toString(36).toUpperCase();
+      var i=ps.findIndex(function(x){return x.id===p.id});
+      p.status=p.status||'ACTIVE';
+      if(i>=0)ps[i]=p;else ps.unshift(p);
+      demoSave(ps);return Promise.resolve({ok:true,product:p});
+    }
+    return postLive({action:'upsertProduct',adminKey:pin,product:p});
+  },
+  deleteProduct:function(pin,id){
+    if(!isLive()){demoSave(demoLoad().filter(function(x){return x.id!==id}));return Promise.resolve({ok:true})}
+    return postLive({action:'deleteProduct',adminKey:pin,id:id});
+  },
+  updateStatus:function(pin,oid,st){
+    if(!isLive()){var os=demoOrders();os.forEach(function(o){if(o.orderId===oid)o.status=st});demoSaveOrders(os);return Promise.resolve({ok:true})}
+    return postLive({action:'updateOrderStatus',adminKey:pin,orderId:oid,status:st});
+  },
+  uploadImage:function(pin,file){
+    return new Promise(function(res,rej){
+      var rd=new FileReader();
+      rd.onload=function(){
+        var dataUrl=String(rd.result||'');
+        if(!isLive())return res({ok:true,imageUrl:dataUrl});
+        var m=dataUrl.match(/^data:(.*?);base64,(.*)$/);
+        postLive({action:'uploadImage',adminKey:pin,filename:file.name||'product.jpg',mimeType:(m&&m[1])||file.type||'image/jpeg',base64:(m&&m[2])||''}).then(res,rej);
+      };
+      rd.onerror=rej;rd.readAsDataURL(file);
+    });
+  }
+};
+
+function stockClass(p){if(p.stock<=0)return'out';if(p.stock<=5)return'low';return'ok'}
+function stockText(p){if(p.stock<=0)return'🔴 ကုန်ပြီ';if(p.stock<=5)return'🟡 '+p.stock+' ခုပဲ ကျန်!';return'🟢 လက်ကျန် '+p.stock+' ခု'}
+function openSheet(id){$(id).classList.add('open')}
+function closeSheet(id){$(id).classList.remove('open')}
+window.MyShopCore={$,$$:$$,toast:toast,fmt:fmt,phImg:phImg,pImg:pImg,CFG:CFG,DEMO:DEMO,demoLoad:demoLoad,demoSave:demoSave,isLive:isLive,API:API,stockClass:stockClass,stockText:stockText,openSheet:openSheet,closeSheet:closeSheet};
+})();
+
+</script>
+<script>
+(function(){"use strict";
+var MC=window.MyShopCore,$=MC.$,$$=MC.$$,toast=MC.toast,fmt=MC.fmt,phImg=MC.phImg,pImg=MC.pImg,CFG=MC.CFG,API=MC.API,isLive=MC.isLive,stockClass=MC.stockClass,stockText=MC.stockText,openSheet=MC.openSheet,closeSheet=MC.closeSheet;
+var S={products:[],adminPin:null,orders:[],editing:null,edImg:''};
+function renderConn(){var d=$('#admDotEl'),t=$('#admConnEl');if(!t)return;var live=!!CFG.gasUrl;if(d)d.className='dot '+(live?'live':'demo');t.textContent=live?('🟢 Live — '+CFG.gasUrl.slice(0,60)+'…'):'🟡 Demo mode — GAS မချိတ်ရသေးပါ';}
+$$('.sheet').forEach(function(s){s.addEventListener('click',function(e){if(e.target===s)s.classList.remove('open')})});
+function reloadProducts(){return API.listProducts().then(function(ps){S.products=ps;renderAdmProducts()}).catch(function(){toast('⚠️ ပစ္စည်းစာရင်း ဖတ်မရပါ')});}
+// ---------- admin ----------
+$('#admLoginBtn').onclick=function(){
+  var pin=$('#admPinInput').value.trim();if(!pin){toast('PIN ရိုက်ပါ');return}
+  var b=$('#admLoginBtn');b.disabled=true;b.textContent='⏳…';
+  API.adminLogin(pin).then(function(r){
+    b.disabled=false;b.textContent='ဝင်မယ် ✓';
+    if(!r.ok){toast(r.error==='NET'?'⚠️ Server ချိတ်မရ':'✗ PIN မှားနေတယ်');return}
+    S.adminPin=pin;$('#admPinInput').value='';
+    $('#admGate').hidden=true;$('#admMain').hidden=false;
+    loadAdmin();
+  });
+};
+$('#admLogoutBtn').onclick=function(){S.adminPin=null;S.orders=[];$('#admGate').hidden=false;$('#admMain').hidden=true};
+function loadAdmin(){reloadProducts(true);loadOrders()}
+function reloadProducts(admin){
+  return API.listProducts().then(function(ps){
+    S.products=ps;renderCats();renderGrid();
+    if(admin||!$('#admMain').hidden)renderAdmProducts();
+  }).catch(function(){toast('⚠️ ပစ္စည်းစာရင်း ဖတ်မရပါ')});
+}
+function renderAdmProducts(){
+  var c=$('#admProductsCtn');c.innerHTML='';
+  $('#stProductsEl').textContent=S.products.length;
+  if(!S.products.length)c.innerHTML='<div class="empty">ပစ္စည်း မရှိသေးပါ — အသစ်တင်ပါ</div>';
+  S.products.forEach(function(p){
+    var r=document.createElement('div');r.className='arow';
+    r.innerHTML='<img alt=""><div class="m"><b></b><span></span></div><button class="abtn ed">✏️</button><button class="abtn danger del">🗑</button>';
+    r.querySelector('img').src=pImg(p);
+    r.querySelector('.m b').textContent=p.name;
+    r.querySelector('.m span').textContent=fmt(p.price)+' • '+stockText(p)+' • '+(p.category||'');
+    r.querySelector('.ed').onclick=function(){openEditor(p)};
+    r.querySelector('.del').onclick=function(){
+      if(!confirm('“'+p.name+'” ဖျက်မလား?'))return;
+      API.deleteProduct(S.adminPin,p.id).then(function(){toast('🗑 ဖျက်ပြီးပြီ');reloadProducts(true)});
+    };
+    c.appendChild(r);
+  });
+}
+$('#tabProductsBtn').onclick=function(){$('#tabProductsBtn').classList.add('on');$('#tabOrdersBtn').classList.remove('on');$('#tabGuideBtn').classList.remove('on');$('#paneProducts').hidden=false;$('#paneOrders').hidden=true;$('#paneGuide').hidden=true};
+$('#tabOrdersBtn').onclick=function(){$('#tabOrdersBtn').classList.add('on');$('#tabProductsBtn').classList.remove('on');$('#tabGuideBtn').classList.remove('on');$('#paneProducts').hidden=true;$('#paneOrders').hidden=false;$('#paneGuide').hidden=true;loadOrders()};
+$('#tabGuideBtn').onclick=function(){$('#tabGuideBtn').classList.add('on');$('#tabProductsBtn').classList.remove('on');$('#tabOrdersBtn').classList.remove('on');$('#paneProducts').hidden=true;$('#paneOrders').hidden=true;$('#paneGuide').hidden=false;$('#gasUrlInput').value=CFG.gasUrl};
+$('#admRefreshBtn').onclick=function(){loadAdmin()};
+$('#addProductBtn').onclick=function(){openEditor(null)};
+function openEditor(p){
+  S.editing=p||null;S.edImg=(p&&p.imageUrl)||'';
+  $('#edTitleEl').textContent=p?'✏️ ပြင်မယ် — '+p.name:'＋ ပစ္စည်းအသစ်';
+  $('#edNameInput').value=p?p.name:'';$('#edCatInput').value=p?p.category:'';
+  $('#edPriceInput').value=p?p.price:'';$('#edOldInput').value=p?(p.oldPrice||0):'0';
+  $('#edStockInput').value=p?p.stock:'';$('#edDescInput').value=p?(p.description||''):'';
+  $('#edImgInput').value=(p&&p.imageUrl&&p.imageUrl.indexOf('data:')!==0)?p.imageUrl:'';
+  $('#edFileInput').value='';var pv=$('#edPrevImgEl');pv.style.display=S.edImg?'block':'none';pv.src=S.edImg||'';
+  openSheet('#editorSheet');
+}
+$('#edFileInput').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  var rd=new FileReader();rd.onload=function(){S.edImg=String(rd.result||'');var pv=$('#edPrevImgEl');pv.src=S.edImg;pv.style.display='block'};
+  rd.readAsDataURL(f);
+});
+$('#edCloseBtn').onclick=function(){closeSheet('#editorSheet')};
+$('#edSaveBtn').onclick=function(){
+  var name=$('#edNameInput').value.trim(),price=Number($('#edPriceInput').value)||0,stock=Math.max(0,Math.floor(Number($('#edStockInput').value)||0));
+  if(name.length<2){toast('⚠️ အမည်ထည့်ပါ');return}
+  if(price<=0){toast('⚠️ ဈေးထည့်ပါ');return}
+  var img=$('#edImgInput').value.trim()||S.edImg||'';
+  var b=$('#edSaveBtn');b.disabled=true;b.textContent='⏳ သိမ်းနေပါတယ်…';
+  var done=function(finalImg){
+    var p={id:S.editing?S.editing.id:'',name:name,category:$('#edCatInput').value.trim()||'အထွေထွေ',price:price,oldPrice:Number($('#edOldInput').value)||0,stock:stock,description:$('#edDescInput').value.trim(),imageUrl:finalImg,status:'ACTIVE'};
+    API.upsertProduct(S.adminPin,p).then(function(){
+      b.disabled=false;b.textContent='💾 သိမ်း';closeSheet('#editorSheet');toast('✅ သိမ်းပြီးပြီ');reloadProducts(true);
+    }).catch(function(e){b.disabled=false;b.textContent='💾 သိမ်း';toast('⚠️ '+(e&&e.message||'သိမ်းမရ'))});
+  };
+  var f=$('#edFileInput').files[0];
+  if(f){API.uploadImage(S.adminPin,f).then(function(r){done(r.imageUrl||img)}).catch(function(){done(img)})}
+  else done(img);
+};
+// orders
+function loadOrders(){
+  if(!S.adminPin)return;
+  API.listOrders(S.adminPin).then(function(os){
+    S.orders=os;renderAdmOrders();
+  }).catch(function(e){$('#admOrdersCtn').innerHTML='<div class="empty">⚠️ '+(e&&e.message||'ဖတ်မရ')+'</div>'});
+}
+function renderAdmOrders(){
+  var c=$('#admOrdersCtn');c.innerHTML='';
+  var tot=S.orders.filter(function(o){return o.status!=='CANCELLED'}).reduce(function(a,o){return a+o.totalAmount},0);
+  $('#stOrdersEl').textContent=S.orders.length;$('#stSalesEl').textContent=tot.toLocaleString('en-US');
+  if(!S.orders.length){c.innerHTML='<div class="empty">🧾 အော်ဒါ မရှိသေးပါ</div>';return}
+  var labels={PENDING:'🟡 PENDING',CONFIRMED:'🟢 CONFIRMED',DELIVERED:'✅ DELIVERED',CANCELLED:'🔴 CANCELLED'};
+  S.orders.forEach(function(o){
+    var r=document.createElement('div');r.className='arow';r.style.alignItems='flex-start';
+    var items=(o.items||[]).map(function(it){return'• '+it.name+' × '+it.qty+' = '+(it.subtotal||it.price*it.qty).toLocaleString('en-US')}).join('\n');
+    r.innerHTML='<div class="m"><b></b><span></span><div class="mono" style="margin-top:6px"></div></div><div><select class="stSel"><option>PENDING</option><option>CONFIRMED</option><option>DELIVERED</option><option>CANCELLED</option></select></div>';
+    r.querySelector('.m b').textContent=o.orderId+' — '+fmt(o.totalAmount);
+    r.querySelector('.m span').textContent=(labels[o.status]||o.status)+' • '+o.customerName+' • '+o.phone+' • '+(o.township||'')+' '+o.address+' • '+o.payment;
+    r.querySelector('.mono').textContent=items+(o.note?('\n📝 '+o.note):'');
+    var sel=r.querySelector('.stSel');sel.value=o.status;
+    sel.onchange=function(){API.updateStatus(S.adminPin,o.orderId,sel.value).then(function(){toast('✅ '+o.orderId+' → '+sel.value);loadOrders()})};
+    c.appendChild(r);
+  });
+}
+// guide pane
+$('#gasSaveBtn').onclick=function(){
+  CFG.gasUrl=$('#gasUrlInput').value.trim();
+  try{if(CFG.gasUrl)localStorage.setItem('myshop_gas',CFG.gasUrl);else localStorage.removeItem('myshop_gas')}catch(e){}
+  renderConn();reloadProducts(true);loadOrders();toast(isLive()?'🟢 Live':'🟡 Demo');
+};
+$('#gasDemoBtn').onclick=function(){$('#gasUrlInput').value='';CFG.gasUrl='';try{localStorage.removeItem('myshop_gas')}catch(e){}renderConn();reloadProducts(true);loadOrders()};
+$('#gasTestBtn').onclick=function(){
+  $('#gasTestOutEl').textContent='⏳…';
+  API.ping().then(function(r){$('#gasTestOutEl').textContent='✅ OK '+JSON.stringify(r)}).catch(function(e){$('#gasTestOutEl').textContent='✗ '+(e&&e.message||e)});
+};
+
+try{$('#admShopNameEl').textContent='🛠️ '+CFG.shopName;$('#admShopTagEl').textContent='Admin — '+CFG.tagline}catch(e){}
+renderConn();
+window.MyShopAdmin={CFG:CFG,API:API,state:S,reload:reloadProducts};
+
+})();
+</script>
+</body>
+</html>
